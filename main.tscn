@@ -1,0 +1,70 @@
+[gd_scene load_steps=6 format=3 uid="uid://bmxkpsmh44qqg"]
+
+[ext_resource type="Script" path="res://glasses.gd" id="1_trvar"]
+[ext_resource type="Script" path="res://lens.gd" id="2_x3nvs"]
+[ext_resource type="Texture2D" uid="uid://c461q2yjy21o4" path="res://icon.svg" id="3_fofwt"]
+[ext_resource type="Script" path="res://simulation.gd" id="4_bkqbc"]
+[ext_resource type="Script" path="res://drawing.gd" id="5_mj80h"]
+
+[node name="Main" type="Node2D"]
+
+[node name="Glasses" type="Node2D" parent="." groups=["glasses"]]
+position = Vector2(73, 101)
+script = ExtResource("1_trvar")
+local = true
+
+[node name="LensLeft" type="Node2D" parent="Glasses"]
+script = ExtResource("2_x3nvs")
+
+[node name="Drawing" type="Node2D" parent="Glasses/LensLeft" groups=["drawing"]]
+script = ExtResource("5_mj80h")
+
+[node name="Icon" type="Sprite2D" parent="Glasses/LensLeft/Drawing"]
+scale = Vector2(0.304688, 0.304688)
+texture = ExtResource("3_fofwt")
+
+[node name="LensRight" type="Node2D" parent="Glasses"]
+script = ExtResource("2_x3nvs")
+
+[node name="Drawing" type="Node2D" parent="Glasses/LensRight" groups=["drawing"]]
+position = Vector2(8, 0)
+script = ExtResource("5_mj80h")
+
+[node name="Icon" type="Sprite2D" parent="Glasses/LensRight/Drawing"]
+scale = Vector2(0.304688, 0.304688)
+texture = ExtResource("3_fofwt")
+
+[node name="Simulation" type="Node2D" parent="."]
+script = ExtResource("4_bkqbc")
+
+[node name="Drawing" type="Node2D" parent="Simulation" groups=["drawing"]]
+position = Vector2(213, 210)
+script = ExtResource("5_mj80h")
+
+[node name="Icon" type="Sprite2D" parent="Simulation/Drawing"]
+scale = Vector2(0.304688, 0.304688)
+texture = ExtResource("3_fofwt")
+
+[node name="Drawing2" type="Node2D" parent="Simulation" groups=["drawing"]]
+position = Vector2(322, 365)
+script = ExtResource("5_mj80h")
+
+[node name="Icon" type="Sprite2D" parent="Simulation/Drawing2"]
+scale = Vector2(0.304688, 0.304688)
+texture = ExtResource("3_fofwt")
+
+[node name="Drawing3" type="Node2D" parent="Simulation" groups=["drawing"]]
+position = Vector2(277, 123)
+script = ExtResource("5_mj80h")
+
+[node name="Icon" type="Sprite2D" parent="Simulation/Drawing3"]
+scale = Vector2(0.304688, 0.304688)
+texture = ExtResource("3_fofwt")
+
+[node name="Drawing4" type="Node2D" parent="Simulation" groups=["drawing"]]
+position = Vector2(211, 391)
+script = ExtResource("5_mj80h")
+
+[node name="Icon" type="Sprite2D" parent="Simulation/Drawing4"]
+scale = Vector2(0.304688, 0.304688)
+texture = ExtResource("3_fofwt")
