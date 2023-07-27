@@ -1,10 +1,11 @@
 class_name Glasses
 extends Node2D
 
-@onready var lens_left: Lens = $LensLeft
-@onready var lens_right: Lens = $LensRight
-
+@export var enabled: bool = true
 @export var local: bool = false
+
+@onready var condition: Lens = $Condition
+@onready var outcome: Lens = $Outcome
 
 var changes: Array[Change] = []
 
@@ -26,26 +27,31 @@ class Change:
 		drawing_id = drawing.id
 
 func _ready() -> void:
-	for drawing in Simulation.get_drawings(lens_left):
-		var change = Change.new(drawing)
-		var right_drawing = Simulation.get_drawing(lens_right, drawing.id)
+	if not enabled:
+		return
 		
-		if right_drawing:
+	for drawing in Simulation.get_drawings(condition):
+		var change = Change.new(drawing)
+		var outcome_drawing = Simulation.get_drawing(outcome, drawing.id)
+		
+		if outcome_drawing:
 			change.transition = Transition.PERSIST
-			change.movement = right_drawing.position - drawing.position
-			change.growth = right_drawing.scale - drawing.scale
-			change.rotation = right_drawing.rotation - drawing.rotation
+			change.movement = outcome_drawing.position - drawing.position
+			change.growth = outcome_drawing.scale - drawing.scale
+			change.rotation = outcome_drawing.rotation - drawing.rotation
 			change.local = local
 			
-		if not right_drawing:
+		if not outcome_drawing:
 			change.transition = Transition.DESTROY
 			
 		changes.append(change)
 		
-	for drawing in Simulation.get_drawings(lens_right):
-		var left_drawing = Simulation.get_drawing(lens_left, drawing.id)
+	for drawing in Simulation.get_drawings(outcome):
+		var condition_drawing = Simulation.get_drawing(condition, drawing.id)
 			
-		if not left_drawing:
+		if not condition_drawing:
 			var change = Change.new(drawing)
 			change.transition = Transition.SPAWN
 			changes.append(change)
+			
+	print(changes)

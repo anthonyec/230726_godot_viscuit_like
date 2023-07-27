@@ -1,13 +1,15 @@
 class_name Simulation
 extends Node2D
 
+const CHANGE_RATE = 0.01
+
 var glasses: Array[Glasses] = []
 
 func _ready() -> void:
 	var children = get_parent().get_children()
 	
 	for child in children:
-		if child.is_in_group("glasses"):
+		if child.is_in_group("glasses") and child.enabled:
 			glasses.append(child)
 			
 func _process(_delta: float) -> void:
@@ -44,9 +46,9 @@ func step() -> void:
 				if change.local:
 					movement = change.movement.rotated(drawing.rotation)
 					
-				drawing.position += movement * 0.1
-				drawing.scale += change.growth
-				drawing.rotation += change.rotation * 0.1
+				drawing.position += movement * CHANGE_RATE
+				drawing.scale += change.growth * CHANGE_RATE
+				drawing.rotation += change.rotation * CHANGE_RATE
 				
 				if change.transition == Glasses.Transition.DESTROY:
 					remove_child(drawing)
