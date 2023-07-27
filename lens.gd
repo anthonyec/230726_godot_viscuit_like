@@ -3,31 +3,37 @@ extends Node2D
 
 const SIMILAR_ROTATION = deg_to_rad(5)
 
-func compare(other_lens: Lens) -> Array[Difference]:
+func compared_to(other_lens: Lens) -> Array[Difference]:
 	var differences: Array[Difference] = []
 	
+	# Drawings in this array get removed once they are matched, drainng the 
+	# bucket to avoid generating differences for the same drawing.
+	var other_drawings_bucket = Drawing.get_drawings(other_lens)
+	
 	for drawing in Drawing.get_drawings(self):
-		var other_drawing = Drawing.get_drawing(other_lens, drawing.id)
+		var other_drawings = Drawing.get_drawings(other_lens, drawing.id)
 		var difference = Difference.new(drawing.id)
+
+		var closest_other_drawing = Drawing.get_closest_drawing_to(
+			other_drawings_bucket,
+			drawing
+		)
 		
-		if other_drawing:
+		if closest_other_drawing and closest_other_drawing.id == drawing.id:
 			difference.type = Difference.Type.PERSIST
-			difference.position = other_drawing.position - drawing.position
-			difference.scale = other_drawing.scale - drawing.scale
-			difference.rotation = other_drawing.rotation - drawing.rotation
+			difference.position = closest_other_drawing.position - drawing.position
+			difference.scale = closest_other_drawing.scale - drawing.scale
+			difference.rotation = closest_other_drawing.rotation - drawing.rotation
+			
+			var index_to_remove = other_drawings_bucket.find(closest_other_drawing)
+			other_drawings_bucket.remove_at(index_to_remove)
 		else:
 			difference.type = Difference.Type.REMOVE
 		
 		differences.append(difference)
-		
-	for drawing in Drawing.get_drawings(other_lens):
-		var existing_differences = differences.filter(func(difference):
-			return difference.id == drawing.id
-		)
-				
-		if not existing_differences.is_empty():
-			continue
-
+	
+	# Any drawings left over will be counted as new drawings to be added.
+	for drawing in other_drawings_bucket:
 		var difference = Difference.new(drawing.id)
 
 		difference.type = Difference.Type.ADD
@@ -38,20 +44,3 @@ func compare(other_lens: Lens) -> Array[Difference]:
 		differences.append(difference)
 	
 	return differences
-
-func get_closest_drawing(other_drawing: Drawing) -> Drawing:
-	var drawings = Drawing.get_drawings(self, other_drawing.id)
-	
-	if drawings.is_empty():
-		return null
-	
-	var closest_drawing: Drawing = drawings[0]
-	var smallest_distance: float = INF
-	
-	for drawing in drawings:
-		var distance = drawing.position.distance_to(other_drawing.position)
-		
-		if distance < smallest_distance:
-			closest_drawing = drawing
-	
-	return closest_drawing

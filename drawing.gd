@@ -22,3 +22,19 @@ static func get_drawing(node: Node2D, id: String) -> Drawing:
 		return null
 		
 	return drawings[0]
+	
+static func get_closest_drawing_to(drawings: Array[Drawing], target_drawing: Drawing) -> Drawing:
+	if drawings.is_empty():
+		return null
+		
+	var closest_drawing: Drawing = drawings[0]
+	var smallest_distance: float = INF
+	
+	for drawing in drawings:
+		var distance = drawing.position.distance_to(target_drawing.position)
+		
+		if distance < smallest_distance:
+			closest_drawing = drawing
+			smallest_distance = distance
+	
+	return closest_drawing
