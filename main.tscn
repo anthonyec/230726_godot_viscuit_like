@@ -8,30 +8,40 @@
 
 [node name="Main" type="Node2D"]
 
-[node name="Glasses" type="Node2D" parent="." groups=["glasses"]]
+[node name="Rule" type="Node2D" parent="." groups=["rule"]]
 position = Vector2(73, 101)
 script = ExtResource("1_trvar")
-local = true
 
-[node name="Condition" type="Node2D" parent="Glasses"]
+[node name="Condition" type="Node2D" parent="Rule"]
 script = ExtResource("2_x3nvs")
 
-[node name="Drawing" type="Node2D" parent="Glasses/Condition" groups=["drawing"]]
+[node name="Drawing" type="Node2D" parent="Rule/Condition" groups=["drawing"]]
+position = Vector2(11, 0)
 script = ExtResource("5_mj80h")
 
-[node name="Icon" type="Sprite2D" parent="Glasses/Condition/Drawing"]
+[node name="Icon" type="Sprite2D" parent="Rule/Condition/Drawing"]
 scale = Vector2(0.304688, 0.304688)
 texture = ExtResource("3_fofwt")
 
-[node name="Outcome" type="Node2D" parent="Glasses"]
+[node name="Outcome" type="Node2D" parent="Rule"]
 script = ExtResource("2_x3nvs")
 
-[node name="Drawing" type="Node2D" parent="Glasses/Outcome" groups=["drawing"]]
+[node name="Drawing" type="Node2D" parent="Rule/Outcome" groups=["drawing"]]
 position = Vector2(15, 1)
 rotation = 0.113656
 script = ExtResource("5_mj80h")
 
-[node name="Icon" type="Sprite2D" parent="Glasses/Outcome/Drawing"]
+[node name="Icon" type="Sprite2D" parent="Rule/Outcome/Drawing"]
+scale = Vector2(0.304688, 0.304688)
+texture = ExtResource("3_fofwt")
+
+[node name="Drawing2" type="Node2D" parent="Rule/Outcome" groups=["drawing"]]
+position = Vector2(-37, -60)
+rotation = 0.0191332
+script = ExtResource("5_mj80h")
+id = "Icon2"
+
+[node name="Icon" type="Sprite2D" parent="Rule/Outcome/Drawing2"]
 scale = Vector2(0.304688, 0.304688)
 texture = ExtResource("3_fofwt")
 
