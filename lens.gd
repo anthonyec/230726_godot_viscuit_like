@@ -44,3 +44,32 @@ func compared_to(other_lens: Lens) -> Array[Difference]:
 		differences.append(difference)
 	
 	return differences
+
+func get_bounds() -> Rect2:
+	var bounds = Rect2()
+	
+	for drawing in get_drawings():
+		bounds = bounds.merge(drawing.get_bounds())
+	
+	return bounds
+	
+func get_bounds_relative_to_drawing(drawing: Drawing) -> Rect2:
+	var bounds = get_bounds()
+	bounds.position = drawing.position - bounds.position
+	return bounds
+	
+func has_drawing(drawing: Drawing) -> bool:
+	return Drawing.get_drawing(self, drawing.id) != null
+	
+func has_multiple_drawings() -> bool:
+	return not Drawing.get_drawings(self).is_empty()
+
+func get_drawings() -> Array[Drawing]:
+	return Drawing.get_drawings(self)
+
+func get_first_drawing_matching(other_drawing: Drawing) -> Drawing:
+	for drawing in get_drawings():
+		if drawing.id == other_drawing.id:
+			return drawing
+	
+	return null

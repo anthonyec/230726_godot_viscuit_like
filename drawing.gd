@@ -38,3 +38,11 @@ static func get_closest_drawing_to(drawings: Array[Drawing], target_drawing: Dra
 			smallest_distance = distance
 	
 	return closest_drawing
+	
+func get_size() -> Vector2:
+	# TODO: Hard-coded until I work out how to calcuate it.
+	return Vector2(44, 44)
+
+func get_bounds() -> Rect2:
+	var size = get_size()
+	return Rect2(position - (size / 2), size)
