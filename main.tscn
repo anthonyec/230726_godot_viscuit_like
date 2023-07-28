@@ -9,7 +9,7 @@
 [node name="Main" type="Node2D"]
 
 [node name="Rule" type="Node2D" parent="." groups=["rule"]]
-position = Vector2(73, 101)
+position = Vector2(146, 174)
 script = ExtResource("1_trvar")
 
 [node name="Condition" type="Node2D" parent="Rule"]
@@ -56,7 +56,7 @@ texture = ExtResource("3_fofwt")
 script = ExtResource("4_bkqbc")
 
 [node name="Drawing" type="Node2D" parent="Simulation" groups=["drawing"]]
-position = Vector2(398, 244)
+position = Vector2(447, 405)
 script = ExtResource("5_mj80h")
 
 [node name="Icon" type="Sprite2D" parent="Simulation/Drawing"]
@@ -64,7 +64,7 @@ scale = Vector2(0.304688, 0.304688)
 texture = ExtResource("3_fofwt")
 
 [node name="Drawing2" type="Node2D" parent="Simulation" groups=["drawing"]]
-position = Vector2(444, 181)
+position = Vector2(493, 342)
 script = ExtResource("5_mj80h")
 
 [node name="Icon" type="Sprite2D" parent="Simulation/Drawing2"]

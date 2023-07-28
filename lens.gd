@@ -73,3 +73,53 @@ func get_first_drawing_matching(other_drawing: Drawing) -> Drawing:
 			return drawing
 	
 	return null
+
+func get_drawing_near_position(other_position: Vector2, tolerance: int = 10) -> Drawing:
+	var bounds = get_bounds()
+	
+	for drawing in get_drawings():
+		if drawing.position.distance_to(other_position) < tolerance:
+			return drawing
+	
+	return null
+	
+class MatchResult:
+	var affected_scene_drawings: Array[Drawing]
+
+func matches(scene: Simulation, drawing: Drawing) -> MatchResult:
+	var first_matching_drawing = get_first_drawing_matching(drawing)
+	
+	if not first_matching_drawing:
+		return null
+	
+	var bounds = get_bounds()
+	var relative_bounds = get_bounds_relative_to_drawing(first_matching_drawing)
+	
+	# Move the bounding box around in the scene relative to the drawing being targeted.
+	var scene_bounds = Rect2(relative_bounds)
+	scene_bounds.position = drawing.position - scene_bounds.position
+	scene_bounds = scene_bounds.grow(2)
+	
+	var scene_drawings_within_bounds = scene.get_drawings_within_bounds(scene_bounds)
+	var matched_drawing_count: int = 0
+	
+	for scene_drawing in scene_drawings_within_bounds:
+		# TODO: Fix positions, something is a bit off by a few pixels.
+		var relative_position = bounds.position + (scene_drawing.position - scene_bounds.position)
+		var nearest_drawing = get_drawing_near_position(relative_position)
+		
+		if not nearest_drawing:
+			return null
+			
+		if nearest_drawing.id != scene_drawing.id:
+			return null
+		
+		matched_drawing_count += 1
+
+	if matched_drawing_count != scene_drawings_within_bounds.size():
+		return null
+	
+	var result = MatchResult.new()
+	result.affected_scene_drawings = scene_drawings_within_bounds
+	
+	return result
