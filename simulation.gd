@@ -21,13 +21,6 @@ func get_rules() -> Array[Rule]:
 			
 	return rules
 	
-func get_rule_containing_drawing_in_condition(drawing: Drawing) -> Rule:
-	for rule in get_rules():
-		if rule.condition.has_drawing(drawing):
-			return rule
-
-	return null
-	
 func get_drawings_within_bounds(bounds: Rect2) -> Array[Drawing]:
 	var drawings: Array[Drawing] = []
 	
@@ -51,26 +44,8 @@ func step() -> void:
 		for rule in get_rules():
 			var result = rule.condition.matches(self, drawing)
 			
-			if result:
+			if not result.has_error():
 				processed_scene_drawings.append_array(result.affected_scene_drawings)
+				print("MATCH")
 				# TODO: Perform difference transition.
 				break
-
-
-#		# TODO: Change to multiple rules, an array of rules and randomly select.
-#		var rule = get_rule_containing_drawing_in_condition(drawing)
-#
-#		if not rule:
-#			continue
-#
-#		var rule_drawing = rule.condition.get_first_drawing_matching(drawing)
-#		var bounds: Rect2 = rule.condition.get_bounds_relative_to_drawing(rule_drawing)
-#		var bounds_position = drawing.position - bounds.position
-#
-#		bounds.position = bounds_position
-#		bounds = bounds.grow(2)
-#
-#		var drawings_within_bounds = get_drawings_within_bounds(bounds)
-#		print(drawings_within_bounds)
-#
-#		temp_bounds.append(bounds)
