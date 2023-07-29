@@ -24,11 +24,13 @@ func compared_to(other_lens: Lens) -> Array[Difference]:
 			difference.position = closest_other_drawing.position - drawing.position
 			difference.scale = closest_other_drawing.scale - drawing.scale
 			difference.rotation = closest_other_drawing.rotation - drawing.rotation
+			difference.drawing = drawing
 			
 			var index_to_remove = other_drawings_bucket.find(closest_other_drawing)
 			other_drawings_bucket.remove_at(index_to_remove)
 		else:
 			difference.type = Difference.Type.REMOVE
+			difference.drawing = drawing
 		
 		differences.append(difference)
 	
@@ -40,6 +42,7 @@ func compared_to(other_lens: Lens) -> Array[Difference]:
 		difference.position = drawing.position
 		difference.rotation = drawing.rotation
 		difference.scale = drawing.scale
+		difference.drawing = drawing
 
 		differences.append(difference)
 	
@@ -76,22 +79,6 @@ func get_drawing_near_position(other_position: Vector2, tolerance: int = 10) -> 
 			return drawing
 	
 	return null
-	
-class MatchResult:
-	enum Error {
-		NONE,
-		NO_DRAWING_WITH_ID,
-		WRONG_DRAWING_COUNT,
-		WRONG_DRAWING_ID,
-		WRONG_MATCHED_COUNT,
-		NO_NEAREST_DRAWING
-	}
-
-	var error: Error
-	var affected_scene_drawings: Array[Drawing]
-	
-	func has_error() -> bool:
-		return error != Error.NONE
 
 func matches(scene: Simulation, drawing: Drawing) -> MatchResult:
 	var result = MatchResult.new()
@@ -138,5 +125,6 @@ func matches(scene: Simulation, drawing: Drawing) -> MatchResult:
 	
 	result.error = MatchResult.Error.NONE
 	result.affected_scene_drawings = scene_drawings_within_bounds
+	result.bounds = scene_bounds
 	
 	return result

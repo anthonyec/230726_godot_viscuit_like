@@ -1,11 +1,13 @@
 class_name Simulation
 extends Node2D
 
+signal animations_finished
+
 const CHANGE_RATE = 0.01
 
 func _ready() -> void:
 	step()
-	pass
+	animations_finished.connect(step)
 
 func _process(_delta: float) -> void:
 #	step()
@@ -44,8 +46,69 @@ func step() -> void:
 		for rule in get_rules():
 			var result = rule.condition.matches(self, drawing)
 			
-			if not result.has_error():
-				processed_scene_drawings.append_array(result.affected_scene_drawings)
-				print("MATCH")
-				# TODO: Perform difference transition.
-				break
+			if result.has_error():
+				continue
+				
+			processed_scene_drawings.append_array(result.affected_scene_drawings)
+			apply_differences(result, rule)
+
+func apply_differences(result: MatchResult, rule: Rule) -> void:
+	var scene_drawings: Array[Drawing] = result.affected_scene_drawings
+	
+	# TODO: Warning, this is sorting the original array.
+	scene_drawings.sort_custom(func(a: Drawing, b: Drawing):
+		return a.position.distance_squared_to(result.bounds.position) > b.position.distance_squared_to(result.bounds.position)
+	)
+	
+	var rule_bounds = rule.condition.get_bounds()
+	var differences = rule.get_differences()
+	
+	differences.sort_custom(func(a: Difference, b: Difference):
+		return a.drawing.position.distance_squared_to(rule_bounds.position) > b.drawing.position.distance_squared_to(rule_bounds.position)
+	)
+	
+	var wait_group = WaitGroup.new()
+	
+	for index in scene_drawings.size():
+		var drawing = scene_drawings[index]
+		var difference = differences[index]
+		
+		match difference.type:
+			Difference.Type.PERSIST:
+				var tween = drawing.create_tween()
+				
+				wait_group.bind(tween.finished)
+				tween.set_parallel(true)
+				
+				tween.tween_property(
+					drawing, 
+					"position",
+					drawing.position + difference.position,
+					1
+				)
+				
+				tween.tween_property(
+					drawing, 
+					"scale",
+					drawing.scale + difference.scale,
+					1
+				)
+
+				tween.tween_property(
+					drawing, 
+					"rotation",
+					drawing.rotation + difference.rotation,
+					1
+				)
+				
+			Difference.Type.REMOVE:
+				remove_child(drawing)
+
+			Difference.Type.ADD:
+				var new_drawing: Drawing = difference.drawing.duplicate() as Drawing
+				new_drawing.position = difference.position
+				new_drawing.rotation = difference.rotation
+				new_drawing.scale = difference.scale
+	
+	await wait_group.finished
+	animations_finished.emit()
