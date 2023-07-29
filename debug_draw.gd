@@ -27,3 +27,14 @@ func circle(origin: Vector2, color: Color = Color.RED, radius: float = 5) -> voi
 	commands.append(func():
 		draw_circle(origin, radius, color)
 	)
+	
+func match_blueprint(match_blueprint: MatchBlueprint, color: Color = Color.RED, origin: Vector2 = Vector2.ZERO) -> void:
+	commands.append(func():
+		var bounds = Rect2(match_blueprint.bounds)
+		bounds.position = origin + bounds.position
+		
+		draw_rect(bounds, color, false)
+		
+		for drawing in match_blueprint.drawings:
+			draw_circle(origin + drawing.position, 2, color)
+	)

@@ -100,7 +100,7 @@ texture = ExtResource("3_fofwt")
 script = ExtResource("4_bkqbc")
 
 [node name="Drawing2" type="Node2D" parent="Simulation" groups=["drawing"]]
-position = Vector2(493, 342)
+position = Vector2(613, 418)
 script = ExtResource("5_mj80h")
 
 [node name="Icon" type="Sprite2D" parent="Simulation/Drawing2"]
@@ -108,9 +108,17 @@ scale = Vector2(0.304688, 0.304688)
 texture = ExtResource("3_fofwt")
 
 [node name="Drawing" type="Node2D" parent="Simulation" groups=["drawing"]]
-position = Vector2(447, 405)
+position = Vector2(567, 481)
 script = ExtResource("5_mj80h")
 
 [node name="Icon" type="Sprite2D" parent="Simulation/Drawing"]
+scale = Vector2(0.304688, 0.304688)
+texture = ExtResource("3_fofwt")
+
+[node name="Drawing3" type="Node2D" parent="Simulation" groups=["drawing"]]
+position = Vector2(846, 156)
+script = ExtResource("5_mj80h")
+
+[node name="Icon" type="Sprite2D" parent="Simulation/Drawing3"]
 scale = Vector2(0.304688, 0.304688)
 texture = ExtResource("3_fofwt")

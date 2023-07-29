@@ -8,3 +8,6 @@ extends Node2D
 
 func get_differences() -> Array[Difference]:
 	return condition.compared_to(outcome)
+
+func get_match_blueprint() -> MatchBlueprint:
+	return MatchBlueprint.new(condition.get_drawings())

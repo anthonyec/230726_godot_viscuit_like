@@ -1,13 +1,20 @@
 class_name Simulation
 extends Node2D
 
-signal animations_finished
-
-const CHANGE_RATE = 0.01
+const SPEED: int = 1
 
 func _ready() -> void:
 	step()
-	animations_finished.connect(step)
+	return
+	var timer: Timer = Timer.new()
+	
+	timer.connect("timeout", func():
+		step()
+		timer.start(1)
+	)
+	
+	timer.autostart = true
+	add_child(timer)
 
 func _process(_delta: float) -> void:
 #	step()
@@ -23,11 +30,12 @@ func get_rules() -> Array[Rule]:
 			
 	return rules
 	
-func get_drawings_within_bounds(bounds: Rect2) -> Array[Drawing]:
+func get_drawings_within_bounds(bounds: Rect2, tolerance: int = 0) -> Array[Drawing]:
 	var drawings: Array[Drawing] = []
+	var check_bounds = bounds.grow(tolerance)
 	
 	for drawing in get_drawings():
-		if bounds.encloses(drawing.get_bounds()):
+		if check_bounds.encloses(drawing.get_bounds()):
 			drawings.append(drawing)
 	
 	return drawings
@@ -37,20 +45,57 @@ func get_drawings() -> Array[Drawing]:
 
 func step() -> void:
 	var scene_drawings: Array[Drawing] = get_drawings()
-	var processed_scene_drawings: Array[Drawing] = []
+	var already_matched_instance_ids: Array[int] = []
 	
 	for drawing in scene_drawings:
-		if processed_scene_drawings.has(drawing):
+		if already_matched_instance_ids.has(drawing.get_instance_id()):
 			continue
-			
+		
+		var matched_rules: Array[Rule] = []
+
 		for rule in get_rules():
-			var result = rule.condition.matches(self, drawing)
+			if not rule.enabled:
+				continue
 			
-			if result.has_error():
+			var rule_blueprint = rule.get_match_blueprint()
+			var scene_bounds = rule_blueprint.get_bounds_anchored_to(drawing)
+			
+			if scene_bounds.size.x == 0 and scene_bounds.size.y == 0:
+				continue
+			
+			var scene_drawings_within_bounds = get_drawings_within_bounds(scene_bounds, 5)
+			var scene_blueprint = MatchBlueprint.new(scene_drawings_within_bounds)
+			
+			var matched_instance_ids = scene_blueprint.overlap_matches(rule_blueprint)
+			
+			DebugDraw.rect(rule_blueprint.bounds, Color.WHITE)
+			DebugDraw.rect(scene_bounds)
+
+			if matched_instance_ids.is_empty():
 				continue
 				
-			processed_scene_drawings.append_array(result.affected_scene_drawings)
-			apply_differences(result, rule)
+			already_matched_instance_ids.append_array(matched_instance_ids)
+			matched_rules.append(rule)
+			
+			
+#			var scene_match_blueprint = MatchBlueprint.new(scene_drawings, rule_match_blueprint)
+			
+			
+			
+			pass
+#			var result = rule.condition.matches(self, drawing)
+#
+#			if result.has_error():
+#				continue
+#
+#			matched_rules.append(result)
+			
+#
+#			if result.has_error():
+#				continue
+#
+#			processed_scene_drawings.append_array(result.affected_scene_drawings)
+#			apply_differences(result, rule)
 
 func apply_differences(result: MatchResult, rule: Rule) -> void:
 	var scene_drawings: Array[Drawing] = result.affected_scene_drawings
@@ -67,8 +112,6 @@ func apply_differences(result: MatchResult, rule: Rule) -> void:
 		return a.drawing.position.distance_squared_to(rule_bounds.position) > b.drawing.position.distance_squared_to(rule_bounds.position)
 	)
 	
-	var wait_group = WaitGroup.new()
-	
 	for index in scene_drawings.size():
 		var drawing = scene_drawings[index]
 		var difference = differences[index]
@@ -76,29 +119,27 @@ func apply_differences(result: MatchResult, rule: Rule) -> void:
 		match difference.type:
 			Difference.Type.PERSIST:
 				var tween = drawing.create_tween()
-				
-				wait_group.bind(tween.finished)
 				tween.set_parallel(true)
 				
 				tween.tween_property(
 					drawing, 
 					"position",
-					drawing.position + difference.position,
-					1
+					drawing.position + difference.position.rotated(drawing.rotation + difference.rotation),
+					SPEED
 				)
 				
 				tween.tween_property(
 					drawing, 
 					"scale",
 					drawing.scale + difference.scale,
-					1
+					SPEED
 				)
 
 				tween.tween_property(
 					drawing, 
 					"rotation",
 					drawing.rotation + difference.rotation,
-					1
+					SPEED
 				)
 				
 			Difference.Type.REMOVE:
@@ -109,6 +150,3 @@ func apply_differences(result: MatchResult, rule: Rule) -> void:
 				new_drawing.position = difference.position
 				new_drawing.rotation = difference.rotation
 				new_drawing.scale = difference.scale
-	
-	await wait_group.finished
-	animations_finished.emit()
