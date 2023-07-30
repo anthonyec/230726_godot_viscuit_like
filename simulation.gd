@@ -46,8 +46,12 @@ func get_drawings() -> Array[Drawing]:
 func step() -> void:
 	var scene_drawings: Array[Drawing] = get_drawings()
 	
-	var already_matched_instance_ids: Array[int] = []
-	var drawing_instance_id_to_rule: Dictionary = {}
+	var instance_ids_in_multi_rules: Array[int] = []
+	var instance_ids_in_single_rules: Array[int] = []
+	
+	var already_matched_instance_ids: Dictionary = {}
+	var instance_id_to_rules: Dictionary = {}
+	var instance_id_to_affected_instance_ids: Dictionary = {}
 	
 	for drawing in scene_drawings:
 		var instance_id = drawing.get_instance_id()
@@ -72,44 +76,53 @@ func step() -> void:
 			
 			DebugDraw.rect(rule_blueprint.bounds, Color.WHITE)
 			DebugDraw.rect(scene_bounds)
-
+			
 			if matched_instance_ids.is_empty():
 				continue
 				
-			already_matched_instance_ids.append_array(matched_instance_ids)
-			
-			# TODO: Clean up, maybe using a class if it's not too mem intensive?
-			# Then I don't have to re-type things as dictionaries loose types.
-			if not drawing_instance_id_to_rule.has(instance_id):
-				drawing_instance_id_to_rule[instance_id] = {
-					"multiple": [],
-					"single": [],
-				}
-			
+			for matched_instance_id in matched_instance_ids:
+				already_matched_instance_ids[matched_instance_id] = true
+				
 			if rule.has_multiple_drawings():
-				drawing_instance_id_to_rule[instance_id]["multiple"].append(rule)
+				instance_ids_in_multi_rules.append_array(matched_instance_ids)
 			else:
-				drawing_instance_id_to_rule[instance_id]["single"].append(rule)
+				instance_ids_in_single_rules.append_array(matched_instance_ids)
+				
+			if not instance_id_to_affected_instance_ids.has(instance_id):
+				instance_id_to_affected_instance_ids[instance_id] = []
 			
-		
-	for instance_id in drawing_instance_id_to_rule.keys():
-		var drawing = instance_from_id(instance_id) as Drawing
-		
-		if not drawing:
-			print("DRAWING NOT FOUND!")
-			
-		var info = drawing_instance_id_to_rule[instance_id]
-		# TODO: Type this : (
-		var rules = info["single"]
-		
-		if not info["multiple"].is_empty():
-			rules = info["multiple"]
-		
-		print(drawing)
-		print(rules)
+			print(instance_id, " : ", matched_instance_ids)
+			instance_id_to_affected_instance_ids[instance_id].append_array(matched_instance_ids)
+				
+			if not instance_id_to_rules.has(instance_id):
+				instance_id_to_rules[instance_id] = []
+				
+			instance_id_to_rules[instance_id].append(rule)
 	
-
-
+	
+	print(instance_id_to_rules.keys())
+	print(instance_id_to_affected_instance_ids)
+	var ignored_instance_ids: Array[int] = []
+	
+	for instance_id in instance_id_to_rules.keys():
+		if ignored_instance_ids.has(instance_id):
+			continue
+			
+		var drawing = instance_from_id(instance_id) as Drawing
+		var rules = instance_id_to_rules[instance_id]
+		
+		var is_in_multi_rule = instance_ids_in_multi_rules.has(instance_id)
+		var is_in_single_rule = instance_ids_in_single_rules.has(instance_id)
+		
+		if is_in_single_rule and is_in_multi_rule:
+			print("DO MULTI RULE: ", drawing)
+			ignored_instance_ids.append_array(instance_id_to_affected_instance_ids.get(instance_id, []))
+			continue
+		
+		if is_in_single_rule and not is_in_multi_rule:
+			print("DO SINGLE RULE: ", drawing)
+			continue
+		
 
 func apply_differences(result: MatchResult, rule: Rule) -> void:
 	var scene_drawings: Array[Drawing] = result.affected_scene_drawings
