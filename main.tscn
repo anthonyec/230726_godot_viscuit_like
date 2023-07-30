@@ -96,6 +96,34 @@ script = ExtResource("5_mj80h")
 scale = Vector2(0.304688, 0.304688)
 texture = ExtResource("3_fofwt")
 
+[node name="Rule3" type="Node2D" parent="." groups=["rule"]]
+position = Vector2(146, 499)
+script = ExtResource("1_trvar")
+
+[node name="Condition" type="Node2D" parent="Rule3"]
+position = Vector2(-55, 0)
+script = ExtResource("2_x3nvs")
+
+[node name="Drawing3" type="Node2D" parent="Rule3/Condition" groups=["drawing"]]
+position = Vector2(-1, 0)
+script = ExtResource("5_mj80h")
+
+[node name="Icon" type="Sprite2D" parent="Rule3/Condition/Drawing3"]
+scale = Vector2(0.304688, 0.304688)
+texture = ExtResource("3_fofwt")
+
+[node name="Outcome" type="Node2D" parent="Rule3"]
+position = Vector2(72, 0)
+script = ExtResource("2_x3nvs")
+
+[node name="Drawing2" type="Node2D" parent="Rule3/Outcome" groups=["drawing"]]
+position = Vector2(38, 3)
+script = ExtResource("5_mj80h")
+
+[node name="Icon" type="Sprite2D" parent="Rule3/Outcome/Drawing2"]
+scale = Vector2(0.304688, 0.304688)
+texture = ExtResource("3_fofwt")
+
 [node name="Simulation" type="Node2D" parent="."]
 script = ExtResource("4_bkqbc")
 

@@ -11,3 +11,6 @@ func get_differences() -> Array[Difference]:
 
 func get_match_blueprint() -> MatchBlueprint:
 	return MatchBlueprint.new(condition.get_drawings())
+
+func has_multiple_drawings() -> bool:
+	return condition.get_drawings().size() > 1

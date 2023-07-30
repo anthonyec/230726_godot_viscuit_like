@@ -45,14 +45,16 @@ func get_drawings() -> Array[Drawing]:
 
 func step() -> void:
 	var scene_drawings: Array[Drawing] = get_drawings()
+	
 	var already_matched_instance_ids: Array[int] = []
+	var drawing_instance_id_to_rule: Dictionary = {}
 	
 	for drawing in scene_drawings:
-		if already_matched_instance_ids.has(drawing.get_instance_id()):
+		var instance_id = drawing.get_instance_id()
+		
+		if already_matched_instance_ids.has(instance_id):
 			continue
 		
-		var matched_rules: Array[Rule] = []
-
 		for rule in get_rules():
 			if not rule.enabled:
 				continue
@@ -75,27 +77,39 @@ func step() -> void:
 				continue
 				
 			already_matched_instance_ids.append_array(matched_instance_ids)
-			matched_rules.append(rule)
 			
+			# TODO: Clean up, maybe using a class if it's not too mem intensive?
+			# Then I don't have to re-type things as dictionaries loose types.
+			if not drawing_instance_id_to_rule.has(instance_id):
+				drawing_instance_id_to_rule[instance_id] = {
+					"multiple": [],
+					"single": [],
+				}
 			
-#			var scene_match_blueprint = MatchBlueprint.new(scene_drawings, rule_match_blueprint)
+			if rule.has_multiple_drawings():
+				drawing_instance_id_to_rule[instance_id]["multiple"].append(rule)
+			else:
+				drawing_instance_id_to_rule[instance_id]["single"].append(rule)
 			
+		
+	for instance_id in drawing_instance_id_to_rule.keys():
+		var drawing = instance_from_id(instance_id) as Drawing
+		
+		if not drawing:
+			print("DRAWING NOT FOUND!")
 			
-			
-			pass
-#			var result = rule.condition.matches(self, drawing)
-#
-#			if result.has_error():
-#				continue
-#
-#			matched_rules.append(result)
-			
-#
-#			if result.has_error():
-#				continue
-#
-#			processed_scene_drawings.append_array(result.affected_scene_drawings)
-#			apply_differences(result, rule)
+		var info = drawing_instance_id_to_rule[instance_id]
+		# TODO: Type this : (
+		var rules = info["single"]
+		
+		if not info["multiple"].is_empty():
+			rules = info["multiple"]
+		
+		print(drawing)
+		print(rules)
+	
+
+
 
 func apply_differences(result: MatchResult, rule: Rule) -> void:
 	var scene_drawings: Array[Drawing] = result.affected_scene_drawings
