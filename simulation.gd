@@ -47,26 +47,15 @@ func step() -> void:
 	var scene_drawings: Array[Drawing] = get_drawings()
 	var rules = get_rules()
 	
-	# Sort rules so that ones with multiple drawings in the condition come first.
-	rules.sort_custom(func(a: Rule, b: Rule):
-		return a.has_multiple_drawings() and not b.has_multiple_drawings()
-	)
-	
-	var already_matched_instance_ids: Dictionary = {}
-	var instance_id_to_rules: Dictionary = {}
-	
-	var instance_id_to_multi_rules: Dictionary = {}
+	var match_results: MatchResults = MatchResults.new()
 	
 	for drawing in scene_drawings:
 		var instance_id = drawing.get_instance_id()
-		print(drawing.name, " - ", instance_id)
 		
-		if already_matched_instance_ids.has(instance_id):
+		if match_results.has(instance_id):
 			continue
 		
 		for rule in rules:
-			print(rule.name)
-			
 			if not rule.enabled:
 				continue
 			
@@ -81,43 +70,18 @@ func step() -> void:
 			
 			var matched_instance_ids = scene_blueprint.overlap_matches(rule_blueprint)
 			
+			# Did not match rule.
 			if matched_instance_ids.is_empty():
 				continue
 				
-			for matched_instance_id in matched_instance_ids:
-				already_matched_instance_ids[matched_instance_id] = true
-				
-			if rule.has_multiple_drawings():
-				for matched_instance_id in matched_instance_ids:
-					instance_id_to_rules.erase(matched_instance_id)
-			else:
-				if instance_id_to_multi_rules.has(instance_id):
-					break
-				
-			if not instance_id_to_rules.has(instance_id):
-				instance_id_to_rules[instance_id] = []
-			
-			instance_id_to_rules[instance_id].append(rule)
+			match_results.add(instance_id, matched_instance_ids, rule)
 	
-		print("\n")
-	
-	print(JSON.stringify(instance_id_to_rules, " "))
-#	print("instance_id_to_multi_rules")
-#	print(instance_id_to_multi_rules)
-#	print("\n")
-#	print("instance_id_to_single_rules")
-#	print(instance_id_to_single_rules)
-#	print("\n")
-#	print(instance_id_to_rules)
-#
-#	for instance_id in already_matched_instance_ids.keys():
-#		var drawing = instance_from_id(instance_id) as Drawing
-#
-#		if not drawing:
-#			print("Instance not found from ID")
-#			return
-			
+	for result in match_results.get_results():
+		var drawing = result.get("drawing") as Drawing
 		
+		print(result)
+		
+	
 
 func apply_differences(result: MatchResult, rule: Rule) -> void:
 	var scene_drawings: Array[Drawing] = result.affected_scene_drawings

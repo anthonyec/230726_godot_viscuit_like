@@ -144,7 +144,7 @@ scale = Vector2(0.304688, 0.304688)
 texture = ExtResource("3_fofwt")
 
 [node name="Drawing3 - OnMyOwn" type="Node2D" parent="Simulation" groups=["drawing"]]
-position = Vector2(846, 156)
+position = Vector2(817, 208)
 script = ExtResource("5_mj80h")
 
 [node name="Icon" type="Sprite2D" parent="Simulation/Drawing3 - OnMyOwn"]
