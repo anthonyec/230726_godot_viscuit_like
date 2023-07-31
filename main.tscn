@@ -8,119 +8,119 @@
 
 [node name="Main" type="Node2D"]
 
-[node name="Rule" type="Node2D" parent="." groups=["rule"]]
-position = Vector2(146, 174)
-script = ExtResource("1_trvar")
-
-[node name="Condition" type="Node2D" parent="Rule"]
-position = Vector2(-55, 0)
-script = ExtResource("2_x3nvs")
-
-[node name="Drawing" type="Node2D" parent="Rule/Condition" groups=["drawing"]]
-position = Vector2(2, -3)
-script = ExtResource("5_mj80h")
-
-[node name="Icon" type="Sprite2D" parent="Rule/Condition/Drawing"]
-scale = Vector2(0.304688, 0.304688)
-texture = ExtResource("3_fofwt")
-
-[node name="Drawing2" type="Node2D" parent="Rule/Condition" groups=["drawing"]]
-position = Vector2(49, -65)
-script = ExtResource("5_mj80h")
-
-[node name="Icon" type="Sprite2D" parent="Rule/Condition/Drawing2"]
-scale = Vector2(0.304688, 0.304688)
-texture = ExtResource("3_fofwt")
-
-[node name="Outcome" type="Node2D" parent="Rule"]
-position = Vector2(72, 0)
-script = ExtResource("2_x3nvs")
-
-[node name="Drawing3" type="Node2D" parent="Rule/Outcome" groups=["drawing"]]
-position = Vector2(2, 2.08165e-12)
-script = ExtResource("5_mj80h")
-
-[node name="Icon" type="Sprite2D" parent="Rule/Outcome/Drawing3"]
-scale = Vector2(0.304688, 0.304688)
-texture = ExtResource("3_fofwt")
-
-[node name="Drawing4" type="Node2D" parent="Rule/Outcome" groups=["drawing"]]
-position = Vector2(136, -64)
-script = ExtResource("5_mj80h")
-
-[node name="Icon" type="Sprite2D" parent="Rule/Outcome/Drawing4"]
-scale = Vector2(0.304688, 0.304688)
-texture = ExtResource("3_fofwt")
-
-[node name="Rule2" type="Node2D" parent="." groups=["rule"]]
-position = Vector2(146, 364)
-script = ExtResource("1_trvar")
-
-[node name="Condition" type="Node2D" parent="Rule2"]
-position = Vector2(-55, 0)
-script = ExtResource("2_x3nvs")
-
-[node name="Drawing3" type="Node2D" parent="Rule2/Condition" groups=["drawing"]]
-position = Vector2(-40, 0)
-script = ExtResource("5_mj80h")
-
-[node name="Icon" type="Sprite2D" parent="Rule2/Condition/Drawing3"]
-scale = Vector2(0.304688, 0.304688)
-texture = ExtResource("3_fofwt")
-
-[node name="Drawing4" type="Node2D" parent="Rule2/Condition" groups=["drawing"]]
-position = Vector2(94, -64)
-script = ExtResource("5_mj80h")
-
-[node name="Icon" type="Sprite2D" parent="Rule2/Condition/Drawing4"]
-scale = Vector2(0.304688, 0.304688)
-texture = ExtResource("3_fofwt")
-
-[node name="Outcome" type="Node2D" parent="Rule2"]
-position = Vector2(72, 0)
-script = ExtResource("2_x3nvs")
-
-[node name="Drawing" type="Node2D" parent="Rule2/Outcome" groups=["drawing"]]
-position = Vector2(95, -3)
-script = ExtResource("5_mj80h")
-
-[node name="Icon" type="Sprite2D" parent="Rule2/Outcome/Drawing"]
-scale = Vector2(0.304688, 0.304688)
-texture = ExtResource("3_fofwt")
-
-[node name="Drawing2" type="Node2D" parent="Rule2/Outcome" groups=["drawing"]]
-position = Vector2(142, -65)
-script = ExtResource("5_mj80h")
-
-[node name="Icon" type="Sprite2D" parent="Rule2/Outcome/Drawing2"]
-scale = Vector2(0.304688, 0.304688)
-texture = ExtResource("3_fofwt")
-
-[node name="Rule3" type="Node2D" parent="." groups=["rule"]]
+[node name="Rule3 - MoveRight" type="Node2D" parent="." groups=["rule"]]
 position = Vector2(146, 499)
 script = ExtResource("1_trvar")
 
-[node name="Condition" type="Node2D" parent="Rule3"]
+[node name="Condition" type="Node2D" parent="Rule3 - MoveRight"]
 position = Vector2(-55, 0)
 script = ExtResource("2_x3nvs")
 
-[node name="Drawing3" type="Node2D" parent="Rule3/Condition" groups=["drawing"]]
+[node name="Drawing3" type="Node2D" parent="Rule3 - MoveRight/Condition" groups=["drawing"]]
 position = Vector2(-1, 0)
 script = ExtResource("5_mj80h")
 
-[node name="Icon" type="Sprite2D" parent="Rule3/Condition/Drawing3"]
+[node name="Icon" type="Sprite2D" parent="Rule3 - MoveRight/Condition/Drawing3"]
 scale = Vector2(0.304688, 0.304688)
 texture = ExtResource("3_fofwt")
 
-[node name="Outcome" type="Node2D" parent="Rule3"]
+[node name="Outcome" type="Node2D" parent="Rule3 - MoveRight"]
 position = Vector2(72, 0)
 script = ExtResource("2_x3nvs")
 
-[node name="Drawing2" type="Node2D" parent="Rule3/Outcome" groups=["drawing"]]
+[node name="Drawing2" type="Node2D" parent="Rule3 - MoveRight/Outcome" groups=["drawing"]]
 position = Vector2(38, 3)
 script = ExtResource("5_mj80h")
 
-[node name="Icon" type="Sprite2D" parent="Rule3/Outcome/Drawing2"]
+[node name="Icon" type="Sprite2D" parent="Rule3 - MoveRight/Outcome/Drawing2"]
+scale = Vector2(0.304688, 0.304688)
+texture = ExtResource("3_fofwt")
+
+[node name="Rule2 - Appart" type="Node2D" parent="." groups=["rule"]]
+position = Vector2(146, 364)
+script = ExtResource("1_trvar")
+
+[node name="Condition" type="Node2D" parent="Rule2 - Appart"]
+position = Vector2(-55, 0)
+script = ExtResource("2_x3nvs")
+
+[node name="Drawing3" type="Node2D" parent="Rule2 - Appart/Condition" groups=["drawing"]]
+position = Vector2(-40, 0)
+script = ExtResource("5_mj80h")
+
+[node name="Icon" type="Sprite2D" parent="Rule2 - Appart/Condition/Drawing3"]
+scale = Vector2(0.304688, 0.304688)
+texture = ExtResource("3_fofwt")
+
+[node name="Drawing4" type="Node2D" parent="Rule2 - Appart/Condition" groups=["drawing"]]
+position = Vector2(94, -64)
+script = ExtResource("5_mj80h")
+
+[node name="Icon" type="Sprite2D" parent="Rule2 - Appart/Condition/Drawing4"]
+scale = Vector2(0.304688, 0.304688)
+texture = ExtResource("3_fofwt")
+
+[node name="Outcome" type="Node2D" parent="Rule2 - Appart"]
+position = Vector2(72, 0)
+script = ExtResource("2_x3nvs")
+
+[node name="Drawing" type="Node2D" parent="Rule2 - Appart/Outcome" groups=["drawing"]]
+position = Vector2(95, -3)
+script = ExtResource("5_mj80h")
+
+[node name="Icon" type="Sprite2D" parent="Rule2 - Appart/Outcome/Drawing"]
+scale = Vector2(0.304688, 0.304688)
+texture = ExtResource("3_fofwt")
+
+[node name="Drawing2" type="Node2D" parent="Rule2 - Appart/Outcome" groups=["drawing"]]
+position = Vector2(142, -65)
+script = ExtResource("5_mj80h")
+
+[node name="Icon" type="Sprite2D" parent="Rule2 - Appart/Outcome/Drawing2"]
+scale = Vector2(0.304688, 0.304688)
+texture = ExtResource("3_fofwt")
+
+[node name="Rule - Close" type="Node2D" parent="." groups=["rule"]]
+position = Vector2(146, 174)
+script = ExtResource("1_trvar")
+
+[node name="Condition" type="Node2D" parent="Rule - Close"]
+position = Vector2(-55, 0)
+script = ExtResource("2_x3nvs")
+
+[node name="Drawing" type="Node2D" parent="Rule - Close/Condition" groups=["drawing"]]
+position = Vector2(2, -3)
+script = ExtResource("5_mj80h")
+
+[node name="Icon" type="Sprite2D" parent="Rule - Close/Condition/Drawing"]
+scale = Vector2(0.304688, 0.304688)
+texture = ExtResource("3_fofwt")
+
+[node name="Drawing2" type="Node2D" parent="Rule - Close/Condition" groups=["drawing"]]
+position = Vector2(49, -65)
+script = ExtResource("5_mj80h")
+
+[node name="Icon" type="Sprite2D" parent="Rule - Close/Condition/Drawing2"]
+scale = Vector2(0.304688, 0.304688)
+texture = ExtResource("3_fofwt")
+
+[node name="Outcome" type="Node2D" parent="Rule - Close"]
+position = Vector2(72, 0)
+script = ExtResource("2_x3nvs")
+
+[node name="Drawing3" type="Node2D" parent="Rule - Close/Outcome" groups=["drawing"]]
+position = Vector2(2, 2.08165e-12)
+script = ExtResource("5_mj80h")
+
+[node name="Icon" type="Sprite2D" parent="Rule - Close/Outcome/Drawing3"]
+scale = Vector2(0.304688, 0.304688)
+texture = ExtResource("3_fofwt")
+
+[node name="Drawing4" type="Node2D" parent="Rule - Close/Outcome" groups=["drawing"]]
+position = Vector2(136, -64)
+script = ExtResource("5_mj80h")
+
+[node name="Icon" type="Sprite2D" parent="Rule - Close/Outcome/Drawing4"]
 scale = Vector2(0.304688, 0.304688)
 texture = ExtResource("3_fofwt")
 
@@ -143,10 +143,10 @@ script = ExtResource("5_mj80h")
 scale = Vector2(0.304688, 0.304688)
 texture = ExtResource("3_fofwt")
 
-[node name="Drawing3" type="Node2D" parent="Simulation" groups=["drawing"]]
+[node name="Drawing3 - OnMyOwn" type="Node2D" parent="Simulation" groups=["drawing"]]
 position = Vector2(846, 156)
 script = ExtResource("5_mj80h")
 
-[node name="Icon" type="Sprite2D" parent="Simulation/Drawing3"]
+[node name="Icon" type="Sprite2D" parent="Simulation/Drawing3 - OnMyOwn"]
 scale = Vector2(0.304688, 0.304688)
 texture = ExtResource("3_fofwt")

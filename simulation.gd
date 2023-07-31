@@ -45,21 +45,28 @@ func get_drawings() -> Array[Drawing]:
 
 func step() -> void:
 	var scene_drawings: Array[Drawing] = get_drawings()
+	var rules = get_rules()
 	
-	var instance_ids_in_multi_rules: Array[int] = []
-	var instance_ids_in_single_rules: Array[int] = []
+	# Sort rules so that ones with multiple drawings in the condition come first.
+	rules.sort_custom(func(a: Rule, b: Rule):
+		return a.has_multiple_drawings() and not b.has_multiple_drawings()
+	)
 	
 	var already_matched_instance_ids: Dictionary = {}
 	var instance_id_to_rules: Dictionary = {}
-	var instance_id_to_affected_instance_ids: Dictionary = {}
+	
+	var instance_id_to_multi_rules: Dictionary = {}
 	
 	for drawing in scene_drawings:
 		var instance_id = drawing.get_instance_id()
+		print(drawing.name, " - ", instance_id)
 		
 		if already_matched_instance_ids.has(instance_id):
 			continue
 		
-		for rule in get_rules():
+		for rule in rules:
+			print(rule.name)
+			
 			if not rule.enabled:
 				continue
 			
@@ -74,9 +81,6 @@ func step() -> void:
 			
 			var matched_instance_ids = scene_blueprint.overlap_matches(rule_blueprint)
 			
-			DebugDraw.rect(rule_blueprint.bounds, Color.WHITE)
-			DebugDraw.rect(scene_bounds)
-			
 			if matched_instance_ids.is_empty():
 				continue
 				
@@ -84,44 +88,35 @@ func step() -> void:
 				already_matched_instance_ids[matched_instance_id] = true
 				
 			if rule.has_multiple_drawings():
-				instance_ids_in_multi_rules.append_array(matched_instance_ids)
+				for matched_instance_id in matched_instance_ids:
+					instance_id_to_rules.erase(matched_instance_id)
 			else:
-				instance_ids_in_single_rules.append_array(matched_instance_ids)
-				
-			if not instance_id_to_affected_instance_ids.has(instance_id):
-				instance_id_to_affected_instance_ids[instance_id] = []
-			
-			print(instance_id, " : ", matched_instance_ids)
-			instance_id_to_affected_instance_ids[instance_id].append_array(matched_instance_ids)
+				if instance_id_to_multi_rules.has(instance_id):
+					break
 				
 			if not instance_id_to_rules.has(instance_id):
 				instance_id_to_rules[instance_id] = []
-				
+			
 			instance_id_to_rules[instance_id].append(rule)
 	
+		print("\n")
 	
-	print(instance_id_to_rules.keys())
-	print(instance_id_to_affected_instance_ids)
-	var ignored_instance_ids: Array[int] = []
-	
-	for instance_id in instance_id_to_rules.keys():
-		if ignored_instance_ids.has(instance_id):
-			continue
+	print(JSON.stringify(instance_id_to_rules, " "))
+#	print("instance_id_to_multi_rules")
+#	print(instance_id_to_multi_rules)
+#	print("\n")
+#	print("instance_id_to_single_rules")
+#	print(instance_id_to_single_rules)
+#	print("\n")
+#	print(instance_id_to_rules)
+#
+#	for instance_id in already_matched_instance_ids.keys():
+#		var drawing = instance_from_id(instance_id) as Drawing
+#
+#		if not drawing:
+#			print("Instance not found from ID")
+#			return
 			
-		var drawing = instance_from_id(instance_id) as Drawing
-		var rules = instance_id_to_rules[instance_id]
-		
-		var is_in_multi_rule = instance_ids_in_multi_rules.has(instance_id)
-		var is_in_single_rule = instance_ids_in_single_rules.has(instance_id)
-		
-		if is_in_single_rule and is_in_multi_rule:
-			print("DO MULTI RULE: ", drawing)
-			ignored_instance_ids.append_array(instance_id_to_affected_instance_ids.get(instance_id, []))
-			continue
-		
-		if is_in_single_rule and not is_in_multi_rule:
-			print("DO SINGLE RULE: ", drawing)
-			continue
 		
 
 func apply_differences(result: MatchResult, rule: Rule) -> void:
