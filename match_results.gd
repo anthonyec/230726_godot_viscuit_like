@@ -34,6 +34,9 @@ func has(instance_id: int) -> bool:
 func is_part_of_multi_rule(instance_id: int) -> bool:
 	return instance_id_to_has_multi_rule.has(instance_id)
 	
+func get_affected_instance_ids(instance_id: int) -> Array:
+	return instance_id_to_affected_instance_ids.get(instance_id, [])
+	
 func get_results() -> Array[Dictionary]:
 	var results: Array[Dictionary] = []
 	
@@ -45,9 +48,20 @@ func get_results() -> Array[Dictionary]:
 			rules = rules.filter(func(rule: Rule):
 				return rule.has_multiple_drawings()
 			)
+			
+		var drawings: Array[Drawing] = [drawing]
+		
+		for affected_instance_id in get_affected_instance_ids(instance_id):
+			var affected_drawing = instance_from_id(affected_instance_id) as Drawing
+			
+			if drawings.has(affected_drawing):
+				continue
+				
+			drawings.append(affected_drawing)
 		
 		results.append({
 			"drawing": drawing,
+			"drawings": drawings,
 			"rules": rules
 		})
 		

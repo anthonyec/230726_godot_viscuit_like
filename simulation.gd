@@ -4,8 +4,8 @@ extends Node2D
 const SPEED: int = 1
 
 func _ready() -> void:
-	step()
-	return
+#	step()
+#	return
 	var timer: Timer = Timer.new()
 	
 	timer.connect("timeout", func():
@@ -45,7 +45,6 @@ func get_drawings() -> Array[Drawing]:
 
 func step() -> void:
 	var scene_drawings: Array[Drawing] = get_drawings()
-	var rules = get_rules()
 	
 	var match_results: MatchResults = MatchResults.new()
 	
@@ -55,7 +54,7 @@ func step() -> void:
 		if match_results.has(instance_id):
 			continue
 		
-		for rule in rules:
+		for rule in get_rules():
 			if not rule.enabled:
 				continue
 			
@@ -65,7 +64,7 @@ func step() -> void:
 			if scene_bounds.size.x == 0 and scene_bounds.size.y == 0:
 				continue
 			
-			var scene_drawings_within_bounds = get_drawings_within_bounds(scene_bounds, 5)
+			var scene_drawings_within_bounds = get_drawings_within_bounds(scene_bounds, 10)
 			var scene_blueprint = MatchBlueprint.new(scene_drawings_within_bounds)
 			
 			var matched_instance_ids = scene_blueprint.overlap_matches(rule_blueprint)
@@ -78,61 +77,63 @@ func step() -> void:
 	
 	for result in match_results.get_results():
 		var drawing = result.get("drawing") as Drawing
+		var drawings = result.get("drawings", []) as Array[Drawing]
+		var rules = result.get("rules", []) as Array[Rule]
 		
-		print(result)
+		if rules.is_empty():
+			continue
+			
+		var rule = rules.pick_random() as Rule
+		apply_rules(drawing, drawings, rule)
 		
-	
-
-func apply_differences(result: MatchResult, rule: Rule) -> void:
-	var scene_drawings: Array[Drawing] = result.affected_scene_drawings
-	
-	# TODO: Warning, this is sorting the original array.
-	scene_drawings.sort_custom(func(a: Drawing, b: Drawing):
-		return a.position.distance_squared_to(result.bounds.position) > b.position.distance_squared_to(result.bounds.position)
-	)
-	
-	var rule_bounds = rule.condition.get_bounds()
+func apply_rules(anchor: Drawing, drawings: Array[Drawing], rule: Rule) -> void:
 	var differences = rule.get_differences()
 	
-	differences.sort_custom(func(a: Difference, b: Difference):
-		return a.drawing.position.distance_squared_to(rule_bounds.position) > b.drawing.position.distance_squared_to(rule_bounds.position)
-	)
+	# Use the blueprint instead of the position differences to avoid drift that 
+	# is acculumated over time with the tolerances.
+	var blueprint = rule.get_outcome_blueprint()
+	blueprint.anchor_to(anchor)
 	
-	for index in scene_drawings.size():
-		var drawing = scene_drawings[index]
+	for index in drawings.size():
+		var drawing = drawings[index]
+		var drawing_blueprint = blueprint.drawings[index] as MatchBlueprint.DrawingBlueprint	
 		var difference = differences[index]
 		
-		match difference.type:
-			Difference.Type.PERSIST:
-				var tween = drawing.create_tween()
-				tween.set_parallel(true)
-				
-				tween.tween_property(
-					drawing, 
-					"position",
-					drawing.position + difference.position.rotated(drawing.rotation + difference.rotation),
-					SPEED
-				)
-				
-				tween.tween_property(
-					drawing, 
-					"scale",
-					drawing.scale + difference.scale,
-					SPEED
-				)
+		if difference.type == Difference.Type.PERSIST:
+			var tween = drawing.create_tween()
+			tween.set_parallel(true)
+			
+			# TODO: Fix this.
+			var target_position = drawing.position + difference.position
+			
+			if drawing != anchor:
+				target_position = drawing_blueprint.position
+			
+			tween.tween_property(
+				drawing, 
+				"position",
+				drawing.position + difference.position,
+				SPEED
+			)
+			
+			tween.tween_property(
+				drawing, 
+				"scale",
+				drawing.scale + difference.scale,
+				SPEED
+			)
 
-				tween.tween_property(
-					drawing, 
-					"rotation",
-					drawing.rotation + difference.rotation,
-					SPEED
-				)
-				
-			Difference.Type.REMOVE:
-				remove_child(drawing)
-
-			Difference.Type.ADD:
-				var new_drawing: Drawing = difference.drawing.duplicate() as Drawing
-				new_drawing.position = difference.position
-				new_drawing.rotation = difference.rotation
-				new_drawing.scale = difference.scale
+			tween.tween_property(
+				drawing, 
+				"rotation",
+				drawing.rotation + difference.rotation,
+				SPEED
+			)
+			
+		if difference.type == Difference.Type.ADD:
+			# TODO: Implement.
+			pass
+			
+		if difference.type == Difference.Type.REMOVE:
+			# TODO: Implement.
+			pass

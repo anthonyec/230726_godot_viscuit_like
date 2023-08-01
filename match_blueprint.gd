@@ -32,16 +32,31 @@ func _init(drawings: Array[Drawing]) -> void:
 	
 	bounds.position = Vector2.ZERO
 	
+func find_drawing_by_id(id: String) -> DrawingBlueprint:
+	for drawing in drawings:
+		if drawing.id == id:
+			return drawing
+			
+	return null
+	
+func anchor_to(other_drawing: Drawing) -> void:
+	var anchor: DrawingBlueprint = find_drawing_by_id(other_drawing.id)
+	
+	# TODO: If the blueprint is made a Node2D, then the drawings can be children
+	# making their positions automatic when the parent moves, to avoid 
+	# this calculation.
+	var previous_bounds_position = bounds.position
+	
+	bounds.position = other_drawing.position - anchor.position
+	
+	for drawing in drawings:
+		var difference = previous_bounds_position + bounds.position
+		drawing.position += difference
+	
 func get_bounds_anchored_to(other_drawing: Drawing) -> Rect2:
 	var anchored_bounds = Rect2()
-	var anchor: DrawingBlueprint = null
+	var anchor: DrawingBlueprint = find_drawing_by_id(other_drawing.id)
 	
-	# Find drawing that first matches the same ID.
-	for drawing in drawings:
-		if drawing.id == other_drawing.id:
-			anchor = drawing
-			break
-			
 	if not anchor:
 		return anchored_bounds
 	
@@ -50,7 +65,7 @@ func get_bounds_anchored_to(other_drawing: Drawing) -> Rect2:
 	
 	return anchored_bounds
 
-func overlap_matches(other_match_blueprint: MatchBlueprint) -> Array[int]:
+func overlap_matches(other_match_blueprint: MatchBlueprint, tolerance: float = 10) -> Array[int]:
 	if drawings.is_empty() or other_match_blueprint.drawings.is_empty():
 		return []
 	
@@ -63,7 +78,7 @@ func overlap_matches(other_match_blueprint: MatchBlueprint) -> Array[int]:
 			var distance = drawing.position.distance_to(other_drawing.position)
 			
 			# TODO: Match on other properties like rotation, and maybe scale?
-			if distance > 5 or drawing.id != other_drawing.id:
+			if distance > tolerance or drawing.id != other_drawing.id:
 				continue
 			
 			matched_instance_ids.append(drawing.instance_id)

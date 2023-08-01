@@ -11,6 +11,7 @@
 [node name="Rule3 - MoveRight" type="Node2D" parent="." groups=["rule"]]
 position = Vector2(146, 499)
 script = ExtResource("1_trvar")
+enabled = false
 
 [node name="Condition" type="Node2D" parent="Rule3 - MoveRight"]
 position = Vector2(-55, 0)
@@ -29,7 +30,8 @@ position = Vector2(72, 0)
 script = ExtResource("2_x3nvs")
 
 [node name="Drawing2" type="Node2D" parent="Rule3 - MoveRight/Outcome" groups=["drawing"]]
-position = Vector2(38, 3)
+position = Vector2(52, 6.10352e-05)
+rotation = 1.11299
 script = ExtResource("5_mj80h")
 
 [node name="Icon" type="Sprite2D" parent="Rule3 - MoveRight/Outcome/Drawing2"]
@@ -45,7 +47,6 @@ position = Vector2(-55, 0)
 script = ExtResource("2_x3nvs")
 
 [node name="Drawing3" type="Node2D" parent="Rule2 - Appart/Condition" groups=["drawing"]]
-position = Vector2(-40, 0)
 script = ExtResource("5_mj80h")
 
 [node name="Icon" type="Sprite2D" parent="Rule2 - Appart/Condition/Drawing3"]
@@ -53,7 +54,7 @@ scale = Vector2(0.304688, 0.304688)
 texture = ExtResource("3_fofwt")
 
 [node name="Drawing4" type="Node2D" parent="Rule2 - Appart/Condition" groups=["drawing"]]
-position = Vector2(94, -64)
+position = Vector2(135, -65)
 script = ExtResource("5_mj80h")
 
 [node name="Icon" type="Sprite2D" parent="Rule2 - Appart/Condition/Drawing4"]
@@ -61,11 +62,10 @@ scale = Vector2(0.304688, 0.304688)
 texture = ExtResource("3_fofwt")
 
 [node name="Outcome" type="Node2D" parent="Rule2 - Appart"]
-position = Vector2(72, 0)
+position = Vector2(182, 1)
 script = ExtResource("2_x3nvs")
 
 [node name="Drawing" type="Node2D" parent="Rule2 - Appart/Outcome" groups=["drawing"]]
-position = Vector2(95, -3)
 script = ExtResource("5_mj80h")
 
 [node name="Icon" type="Sprite2D" parent="Rule2 - Appart/Outcome/Drawing"]
@@ -73,7 +73,7 @@ scale = Vector2(0.304688, 0.304688)
 texture = ExtResource("3_fofwt")
 
 [node name="Drawing2" type="Node2D" parent="Rule2 - Appart/Outcome" groups=["drawing"]]
-position = Vector2(142, -65)
+position = Vector2(59, -65)
 script = ExtResource("5_mj80h")
 
 [node name="Icon" type="Sprite2D" parent="Rule2 - Appart/Outcome/Drawing2"]
@@ -89,7 +89,6 @@ position = Vector2(-55, 0)
 script = ExtResource("2_x3nvs")
 
 [node name="Drawing" type="Node2D" parent="Rule - Close/Condition" groups=["drawing"]]
-position = Vector2(2, -3)
 script = ExtResource("5_mj80h")
 
 [node name="Icon" type="Sprite2D" parent="Rule - Close/Condition/Drawing"]
@@ -97,7 +96,7 @@ scale = Vector2(0.304688, 0.304688)
 texture = ExtResource("3_fofwt")
 
 [node name="Drawing2" type="Node2D" parent="Rule - Close/Condition" groups=["drawing"]]
-position = Vector2(49, -65)
+position = Vector2(50, -65)
 script = ExtResource("5_mj80h")
 
 [node name="Icon" type="Sprite2D" parent="Rule - Close/Condition/Drawing2"]
@@ -109,7 +108,6 @@ position = Vector2(72, 0)
 script = ExtResource("2_x3nvs")
 
 [node name="Drawing3" type="Node2D" parent="Rule - Close/Outcome" groups=["drawing"]]
-position = Vector2(2, 2.08165e-12)
 script = ExtResource("5_mj80h")
 
 [node name="Icon" type="Sprite2D" parent="Rule - Close/Outcome/Drawing3"]
@@ -117,7 +115,7 @@ scale = Vector2(0.304688, 0.304688)
 texture = ExtResource("3_fofwt")
 
 [node name="Drawing4" type="Node2D" parent="Rule - Close/Outcome" groups=["drawing"]]
-position = Vector2(136, -64)
+position = Vector2(135, -65)
 script = ExtResource("5_mj80h")
 
 [node name="Icon" type="Sprite2D" parent="Rule - Close/Outcome/Drawing4"]
